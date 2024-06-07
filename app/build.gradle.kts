@@ -1,6 +1,18 @@
+import java.util.Properties
+
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+}
+
+fun getLocalProperty(key: String, project: Project): String {
+    val properties = Properties()
+    val localPropertiesFile = project.rootProject.file("local.properties")
+    if (localPropertiesFile.exists()) {
+        localPropertiesFile.inputStream().use { properties.load(it) }
+    }
+    return properties.getProperty(key) ?: ""
 }
 
 android {
@@ -18,6 +30,14 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        val apiKey = getLocalProperty("API_KEY", project)
+        buildConfigField("String", "API_KEY", "\"$apiKey\"")
+        manifestPlaceholders["GOOGLE_KEY"] = apiKey
+    }
+
+    buildFeatures {
+        buildConfig = true
     }
 
     buildTypes {
@@ -50,6 +70,16 @@ android {
 }
 
 dependencies {
+
+    implementation("com.google.maps.android:maps-compose:2.15.0")
+    implementation("com.google.android.gms:play-services-maps:18.1.0")
+
+    implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.6.2")
+    implementation("com.squareup.retrofit2:retrofit:2.9.0")
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("androidx.navigation:navigation-compose:2.7.4")
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+
 
     implementation("androidx.core:core-ktx:1.13.1")
     implementation("androidx.lifecycle:lifecycle-runtime-ktx:2.8.0")
