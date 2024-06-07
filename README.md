@@ -1,2 +1,2 @@
 # ShoppingList
-Shopping List for Android
+Shopping List for Android using Jetpack Compose
